@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "fluent-flow"
+version = "0.1.0"
+description = "German speaking coach"
+authors = ["Isma-Ilou Sadou <ismailou.sa@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "*", from="src"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+sounddevice = "^0.4.7"
+soundfile = "^0.12.1"
+numpy = "1.26.4"
+vosk = "0.3.44"
+torch = "2.2.2"
+langchain-community = "^0.2.11"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
