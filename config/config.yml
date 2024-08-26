@@ -1,7 +1,23 @@
+artifacts: 
+  root_dir: 'artifacts'
+  audio_dir: 'artifacts/audio'
+
 fluent_flow:
-  audio_recording:
-    duration: 5
-    sample_rate: 44100
+  audio_recorder:
+    default_duration: 5
+    default_fs: 44100
+    output_dir: 'artifacts/audio'
+
+  speech_to_text:
+    default_engine: 'openai'
+
+  text_to_speech:
+    default_lang: 'de'
+    output_dir: 'artifacts/audio'
+
+  language_model:
+    max_tokens: 150
+    temperature: 0.7
 
   vosk_service:
     sample_rate: 16000

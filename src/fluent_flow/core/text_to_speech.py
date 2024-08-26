@@ -1,35 +1,62 @@
+import os
 from gtts import gTTS
 from pydub import AudioSegment
-from pydub.playback import play
 from fluent_flow import logger
 
 
-def text_to_speech(text, lang="de"):
-    """Convert text to speech."""
-    logger.info("Converting text to speech...")
-    tts = gTTS(text=text, lang=lang)
-    tts.save("output.mp3")
-    audio = AudioSegment.from_mp3("output.mp3")
-    play(audio)
-    logger.info("Text-to-speech conversion completed")
-    return "output.mp3"
+class TextToSpeech:
+    def __init__(self, default_lang="de"):
+        self.default_lang = default_lang
 
+    def convert(self, text, lang=None, save_mp3=False, save_wav=True):
+        """
+        Convert text to speech.
 
-# def text_to_speech(text, language='de', mp3_filename='output.mp3', wav_filename='output.wav'):
-#     """Convert text to speech in German and save as a WAV file."""
-#     try:
-#         # Convert text to speech and save as MP3
-#         tts = gTTS(text=text, lang=language)
-#         tts.save(mp3_filename)
-#         logger.info(f"Text-to-speech conversion completed and saved to {mp3_filename}")
+        :param text: The text to convert to speech
+        :param lang: The language of the text (default is German)
+        :param save_mp3: Whether to save the audio as MP3
+        :param save_wav: Whether to save the audio as WAV
+        :return: Dictionary with paths to saved files
+        """
+        lang = lang or self.default_lang
+        logger.info(f"Converting text to speech in {lang}...")
 
-#         # Convert MP3 to WAV
-#         audio = AudioSegment.from_mp3(mp3_filename)
-#         audio.export(wav_filename, format='wav')
-#         logger.info(f"Audio converted to WAV and saved to {wav_filename}")
+        try:
+            tts = gTTS(text=text, lang=lang)
+            mp3_filename = "tts.mp3"
+            wav_filename = "tts.wav"
+            output_files = {}
 
-#         # Optionally, remove the MP3 file if you only want the WAV
-#         # os.remove(mp3_filename)
+            # Save as MP3
+            if save_mp3:
+                tts.save(mp3_filename)
+                output_files["mp3"] = mp3_filename
+                logger.info(f"Audio saved as MP3: {mp3_filename}")
 
-#     except Exception as e:
-#         logger.error(f"Error in text-to-speech conversion: {str(e)}")
+            # Convert to WAV if requested
+            if save_wav:
+                audio = AudioSegment.from_mp3(mp3_filename)
+                audio.export(wav_filename, format="wav")
+                output_files["wav"] = wav_filename
+                logger.info(f"Audio converted to WAV: {wav_filename}")
+
+            logger.info("Text-to-speech conversion completed")
+            return output_files
+
+        except Exception as e:
+            logger.error(f"Error in text-to-speech conversion: {str(e)}")
+            return None
+
+    def set_default_language(self, lang):
+        """Set the default language for text-to-speech conversion."""
+        self.default_lang = lang
+        logger.info(f"Default language set to: {lang}")
+
+    def cleanup_files(self, files):
+        """Remove temporary audio files."""
+        for file_path in files.values():
+            try:
+                os.remove(file_path)
+                logger.info(f"Removed temporary file: {file_path}")
+            except Exception as e:
+                logger.error(f"Error removing file {file_path}: {str(e)}")

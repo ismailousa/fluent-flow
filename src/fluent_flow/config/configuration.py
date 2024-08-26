@@ -1,36 +1,67 @@
 import os
 from box import ConfigBox
-from dotenv import load_dotenv
-from fluent_flow.utils.common import read_yaml
+from dotenv import load_dotenv, find_dotenv
+from fluent_flow.core.constants import *
+from fluent_flow.utils.common import create_directories, read_yaml
 from fluent_flow import logger
 
 # Load secrets from .env file
-load_dotenv()
+load_dotenv(find_dotenv())
 
 
 class ConfigurationManager:
-    def __init__(self, config_filepath="config.yml"):
+    def __init__(self, config_filepath=CONFIG_FILE_PATH):
         logger.info(f"Reading the configuration file: {config_filepath}")
         self.config = read_yaml(config_filepath)
+        create_directories([self.config.artifacts.root_dir])
+        create_directories([self.config.artifacts.audio_dir])
 
-    def get_vosk_service_config(self) -> dict:
-        config = self.config["fluent_flow"]["vosk_service"]
+    def get_audio_recorder_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.audio_recorder
+        return ConfigBox(
+            {
+                "default_duration": config.default_duration,
+                "default_fs": config.default_fs,
+                "output_dir": self.config.artifacts.audio_dir,
+            }
+        )
+
+    def get_speech_to_text_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.speech_to_text
+        return ConfigBox(
+            {
+                "default_engine": config.default_engine,
+                "openai": self.get_openai_service_config(),
+                "vosk": self.get_vosk_service_config(),
+            }
+        )
+
+    def get_text_to_speech_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.text_to_speech
+        return ConfigBox(
+            {"default_lang": config.default_lang, "output_dir": self.config.artifacts.audio_dir}
+        )
+
+    def get_language_model_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.language_model
+        return ConfigBox(
+            {
+                "max_tokens": config.max_tokens,
+                "temperature": config.temperature,
+                "openai": self.get_openai_service_config(),
+            }
+        )
+
+    def get_vosk_service_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.vosk_service
         model_path = os.getenv("VOSK_MODEL_PATH")
-        return ConfigBox(
-            {"model_path": model_path, "sample_rate": config["sample_rate"]}
-        )
+        return ConfigBox({"model_path": model_path, "sample_rate": config.sample_rate})
 
-    def get_openai_service_config(self) -> dict:
-        config = self.config["fluent_flow"]["openai_service"]
+    def get_openai_service_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.openai_service
         api_key = os.getenv("OPENAI_API_KEY")
-        return ConfigBox(
-            {"api_url": config["api_url"], "model": config["model"], "api_key": api_key}
-        )
+        return ConfigBox({"api_url": config.api_url, "model": config.model, "api_key": api_key})
 
-    def get_streamlit_config(self) -> dict:
-        config = self.config["fluent_flow"]["streamlit_app"]
-        return ConfigBox({"host": config["host"], "port": config["port"]})
-
-    def get_logger_config(self) -> dict:
-        config = self.config["fluent_flow"]["logger"]
-        return ConfigBox({"level": config["level"], "format": config["format"]})
+    def get_streamlit_config(self) -> ConfigBox:
+        config = self.config.fluent_flow.streamlit_app
+        return ConfigBox({"host": config.host, "port": config.port})

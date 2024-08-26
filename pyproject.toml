@@ -1,30 +1,86 @@
 [tool.poetry]
 name = "fluent-flow"
 version = "0.1.0"
-description = "German speaking coach"
+description = "AI-powered German language learning assistant"
 authors = ["Isma-Ilou Sadou <ismailou.sa@gmail.com>"]
-license = "MIT"
 readme = "README.md"
-packages = [{include = "*", from="src"}]
+packages = [{include = "fluent_flow", from = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-sounddevice = "^0.4.7"
+python = "^3.10"
+openai = "^1.3.0"
+python-dotenv = "^1.0.0"
+sounddevice = "^0.4.6"
 soundfile = "^0.12.1"
-numpy = "1.26.4"
-vosk = "0.3.44"
-torch = "2.2.2"
-langchain-community = "^0.2.11"
-python-dotenv = "^1.0.1"
-openai = "^1.41.0"
-langchain = "^0.2.14"
-gtts = "^2.5.3"
+numpy = "^1.26.0"
+gtts = "^2.4.0"
+langchain = "^0.0.340"
+python-box = "^7.2.0"
+pyyaml = "^6.0.2"
+ensure = "^1.0.4"
 pydub = "^0.25.1"
 
+[tool.poetry.group.streamlit]
+optional = true
+
+[tool.poetry.group.streamlit.dependencies]
+streamlit = "^1.20.0"
 
 [tool.poetry.group.dev.dependencies]
-ipykernel = "^6.29.5"
+pytest = "^7.4.3"
+black = "^23.11.0"
+isort = "^5.12.0"
+flake8 = "^6.1.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start-app = "fluent_flow.run_streamlit:main"
+start-conversation = "fluent_flow.conversation_cli:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line-length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = "E203, W503"
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist",
+    ".venv",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
