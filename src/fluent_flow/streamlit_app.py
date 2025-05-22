@@ -23,7 +23,8 @@ st.markdown(
 # Initialize Agent & History 
 if "agent" not in st.session_state:
     st.session_state.agent = TutorAgent("👋  Hallo! Ich bin Coco, deine deutsche Sprachlehrerin."
-            "Ich helfe dir, deine Deutschkenntnisse zu verbessern – stell mir gleich deine erste Frage!")
+            "Ich korrigiere deine Fehler, erkläre sie dir und führe lebendige Gespräche mit dir."
+            "- Stell mir gleich deine erste Frage!")
     
     st.session_state["history"] = st.session_state.agent.state.history 
 

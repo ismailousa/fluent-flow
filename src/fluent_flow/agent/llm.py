@@ -4,8 +4,6 @@ from langchain_openai import ChatOpenAI
 
 config_manager = ConfigurationManager()
 
-api_key = "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"
-
 def load_config():
     llm_config = config_manager.get_llm_config()
     return llm_config
@@ -18,7 +16,7 @@ def get_chat_llm():
         llm_config = load_config()
         logger.info(f"Initializing chat LLM with model: {llm_config.model} and temperature: {llm_config.temperature}")
         if llm_config.provider == "openai":
-            llm = ChatOpenAI(model=llm_config.model, temperature=llm_config.temperature, api_key=api_key)
+            llm = ChatOpenAI(model=llm_config.model, temperature=llm_config.temperature, api_key=llm_config.api_key)
         else:
             raise ValueError(f"Provider {llm_config.provider} not supported")
         return llm
