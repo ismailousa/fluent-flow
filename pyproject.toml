@@ -14,11 +14,13 @@ sounddevice = "^0.4.6"
 soundfile = "^0.12.1"
 numpy = "^1.26.0"
 gtts = "^2.4.0"
-langchain = "^0.0.340"
 python-box = "^7.2.0"
 pyyaml = "^6.0.2"
 ensure = "^1.0.4"
 pydub = "^0.25.1"
+langchain = "^0.3.25"
+langchain-openai = "^0.3.17"
+streamlit = "^1.45.1"
 
 [tool.poetry.group.streamlit]
 optional = true
@@ -31,6 +33,7 @@ pytest = "^7.4.3"
 black = "^23.11.0"
 isort = "^5.12.0"
 flake8 = "^6.1.0"
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]
