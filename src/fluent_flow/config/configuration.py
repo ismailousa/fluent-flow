@@ -3,13 +3,10 @@ from dotenv import load_dotenv, find_dotenv
 from fluent_flow.core.constants import *
 from fluent_flow.utils.common import create_directories, read_yaml
 from fluent_flow import logger
+import streamlit as st
+
 
 load_dotenv(find_dotenv())
-logger.info(f"find_dotenv: {find_dotenv()}")
-
-logger.info(f"OPENAI_API_KEY: {os.getenv('OPENAI_API_KEY')}")
-
-
 
 class ConfigurationManager:
     def __init__(self, config_filepath=CONFIG_FILE_PATH):
@@ -19,7 +16,7 @@ class ConfigurationManager:
         create_directories([self.config.artifacts.audio_dir])
         
         # Load environment variables once
-        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+        self.openai_api_key = os.getenv("OPENAI_API_KEY") or st.secrets["OPENAI_API_KEY"]
         self.vosk_model_path = os.getenv("VOSK_MODEL_PATH")
         
         if not self.openai_api_key:
